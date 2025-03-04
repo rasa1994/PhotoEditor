@@ -211,13 +211,13 @@ void GrayScaleFilter::OnClick(wxCommandEvent& command)
 	postProcessing(&copy, true);
 }
 
-extern "C" void apply_grayscale_filter(unsigned char* d_input, int width, int height);
+extern "C" void ApplyGrayScaleFilterCuda(unsigned char* d_input, int width, int height);
 
 void CudaGrayScaleFilter::OnClick(wxCommandEvent& command)
 {
 	if (!m_image) return;
 	Image copy = *m_image;
-	apply_grayscale_filter(copy.m_imageData.data(), copy.m_width, copy.m_height);
+	ApplyGrayScaleFilterCuda(copy.m_imageData.data(), copy.m_width, copy.m_height);
 	postProcessing(&copy, true);
 }
 
