@@ -12,7 +12,7 @@ private:
 	wxStaticBitmap* m_staticBitmap{ nullptr };
 	wxPanel* m_imagePanel;
 	Image m_mainImageData;
-	Image m_mainImageDataOriginal;
+	Image m_mainImageShowing;
 	std::vector<PanelFilterInterface*> m_panels;
 
 
@@ -136,7 +136,7 @@ void Frame::OpenFile(wxCommandEvent& event)
 		wxString filePath = openFileDialog.GetPath();
 #undef NO_ERROR
 		ErrorType error = ErrorType::NO_ERROR;
-		m_mainImageDataOriginal = m_mainImageData = LoadImageFile(filePath.utf8_string(), error);
+		m_mainImageShowing = m_mainImageData = LoadImageFile(filePath.utf8_string(), error);
 		
 		for (auto& filter : m_panels)
 			filter->SetImage(&m_mainImageData);
@@ -164,7 +164,7 @@ inline void Frame::SaveFile([[maybe_unused]]wxCommandEvent& event)
 #undef NO_ERROR
 		ErrorType error = ErrorType::NO_ERROR;
 		wxString filePath = openFileDialog.GetPath();
-		WriteImage(m_mainImageData, filePath.utf8_string(), error);
+		WriteImage(m_mainImageShowing, filePath.utf8_string(), error);
 		if (error != ErrorType::NO_ERROR)
 		{
 			std::cout << "Error saving image " << std::endl;
@@ -182,6 +182,7 @@ inline void Frame::SetImage(const Image* image, bool changeOriginal)
 	{
 		m_mainImageData = *image;
 	}
+	m_mainImageShowing = *image;
 	auto [RGB, a] = ConvertFromImage(image->m_imageData);
 
 	auto wximage = wxImage(image->m_width, image->m_height, RGB.data(), a.data(), true);
