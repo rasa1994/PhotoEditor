@@ -1,0 +1,9 @@
+{
+  "name": "photoeditor",
+  "dependencies": [
+    "wxwidgets",
+    "magic-enum",
+    "stb",
+    "gtest"
+  ]
+}
