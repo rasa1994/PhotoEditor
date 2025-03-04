@@ -6,11 +6,12 @@ export
 	enum
 	{
 		ID_OpenFile = 2,
-		Filter1 = 3,
-		Filter2 = 4,
-		Filter3 = 5,
-		Filter4 = 6,
+		Filter1,
+		Filter2,
+		Filter3,
+		Filter4,
 		Filter5,
+		Filter6,
 		Save,
 	};
 
@@ -21,6 +22,7 @@ export
 		IDBlackWhiteFilter = 10020,
 		IDPixelaze = 10030,
 		IDLiqify = 10040,
+		IDCudaGrayscale = 10050,
 	};
 
 	using Pair = std::pair<size_t, size_t>;

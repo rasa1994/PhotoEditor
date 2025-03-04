@@ -118,6 +118,21 @@ export
 		std::shared_ptr<wxButton> m_button;
 	};
 
+	class CudaGrayScaleFilter : public PanelFilterInterface
+	{
+	public:
+		CudaGrayScaleFilter(wxWindow* parent, const std::function<void(Image*, bool)>& postProcessing) : PanelFilterInterface(parent, postProcessing)
+		{
+			label->SetLabelText("Cuda grayscale filter");
+			m_button = std::make_shared<wxButton>(this, IDCudaGrayscale, "Apply", wxPoint(50, yOffset), wxDefaultSize);
+			Bind(wxEVT_BUTTON, &CudaGrayScaleFilter::OnClick, this);
+		};
+	private:
+		void OnClick(wxCommandEvent& command);
+		std::shared_ptr<wxButton> m_button;
+	};
+
+
 	class BlackWhiteFilter : public PanelFilterInterface
 	{
 	public:
@@ -193,6 +208,16 @@ void GrayScaleFilter::OnClick(wxCommandEvent& command)
 	if (!m_image) return;
 	Image copy = *m_image;
 	GrayFilter(copy);
+	postProcessing(&copy, true);
+}
+
+extern "C" void apply_grayscale_filter(unsigned char* d_input, int width, int height);
+
+void CudaGrayScaleFilter::OnClick(wxCommandEvent& command)
+{
+	if (!m_image) return;
+	Image copy = *m_image;
+	apply_grayscale_filter(copy.m_imageData.data(), copy.m_width, copy.m_height);
 	postProcessing(&copy, true);
 }
 

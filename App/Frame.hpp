@@ -41,6 +41,7 @@ inline Frame::Frame() : wxFrame(nullptr, wxID_ANY, "Photo Editor", wxPoint(0, 0)
 	menuFilters->Append(Filter3, "&black and white");
 	menuFilters->Append(Filter4, "&Pixelate");
 	menuFilters->Append(Filter5, "&Liquefy");
+	menuFilters->Append(Filter6, "&Cuda grayscale");
 
 	wxMenu* saveMenu = new wxMenu;
 	saveMenu->Append(Save, "&Save");
@@ -63,15 +64,17 @@ inline Frame::Frame() : wxFrame(nullptr, wxID_ANY, "Photo Editor", wxPoint(0, 0)
 	Bind(wxEVT_MENU, &Frame::SelectFilter, this, Filter3);
 	Bind(wxEVT_MENU, &Frame::SelectFilter, this, Filter4);
 	Bind(wxEVT_MENU, &Frame::SelectFilter, this, Filter5);
+	Bind(wxEVT_MENU, &Frame::SelectFilter, this, Filter6);
 
 	
 	m_imagePanel = new wxPanel(this);
 
 	m_panels.push_back(new RGBFilterPanel(this, [this](Image* image, bool replace) { SetImage(image, replace); }));
-	//m_panels.push_back(std::make_shared<GrayScaleFilter>(this, [this](Image* image, bool replace) { SetImage(image, replace); }));
-	//m_panels.push_back(std::make_shared<BlackWhiteFilter>(this, [this](Image* image, bool replace) { SetImage(image, replace); }));
-	//m_panels.push_back(std::make_shared<PixelazeFilter>(this, [this](Image* image, bool replace) { SetImage(image, replace); }));
-	//m_panels.push_back(std::make_shared<LiqifyFilter>(this, [this](Image* image, bool replace) { SetImage(image, replace); }));
+	m_panels.push_back(new GrayScaleFilter(this, [this](Image* image, bool replace) { SetImage(image, replace); }));
+	m_panels.push_back(new BlackWhiteFilter(this, [this](Image* image, bool replace) { SetImage(image, replace); }));
+	m_panels.push_back(new PixelazeFilter(this, [this](Image* image, bool replace) { SetImage(image, replace); }));
+	m_panels.push_back(new LiqifyFilter(this, [this](Image* image, bool replace) { SetImage(image, replace); }));
+	m_panels.push_back(new CudaGrayScaleFilter(this, [this](Image* image, bool replace) { SetImage(image, replace); }));
 
 	std::ranges::for_each(m_panels, [this](const auto& panel) { panel->Hide(); });
 }
